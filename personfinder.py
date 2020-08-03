@@ -140,13 +140,13 @@ while True:
         # results contain list of DetectionCandidate(label_id, score, x1, y1, x2, y2)
         label = labels[r.label_id]  # fits label from imported labels to the result
         # is a person detected, light on yellow, else light on green
-        if r.label_id == 0:
-            yellowon()
-            log.debug("[DEBUG] Person detected at frame " + str(frame_id))
-        else:
-            greenon()
-            log.debug("[DEBUG] detected -" + label + "- is irrelevant")
-            label = "not interesting"
+      #  if r.label_id == 0:
+           # yellowon()
+       #     log.debug("[DEBUG] Person detected at frame " + str(frame_id))
+       # else:
+            #greenon()
+        #    log.debug("[DEBUG] detected -" + label + "- is irrelevant")
+        #    label = "not interesting"
         if args["display"]:
             # extract the bounding box and box and predicted class label
             box = r.bounding_box.flatten().astype("int")
