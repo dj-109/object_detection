@@ -1,6 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+# _______   _______ .______   .______       _______   ______      ___      .___________. _______  _______  
+#|       \ |   ____||   _  \  |   _  \     |   ____| /      |    /   \     |           ||   ____||       \ 
+#|  .--.  ||  |__   |  |_)  | |  |_)  |    |  |__   |  ,----'   /  ^  \    `---|  |----`|  |__   |  .--.  |
+#|  |  |  ||   __|  |   ___/  |      /     |   __|  |  |       /  /_\  \       |  |     |   __|  |  |  |  |
+#|  '--'  ||  |____ |  |      |  |\  \----.|  |____ |  `----. /  _____  \      |  |     |  |____ |  '--'  |
+#|_______/ |_______|| _|      | _| `._____||_______| \______|/__/     \__\     |__|     |_______||_______/ 
+#
+
+
 """
 This tool is created to measure the performance of a dataset in detecting persons using a Raspberry Pi with Coral Edge TPU.
 Special thanks to https://www.pyimagesearch.com/ for inspiration and the imutils library, more documentation and explaination can be found on their homepage.
