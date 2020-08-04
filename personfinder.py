@@ -4,7 +4,7 @@
 """
 This tool is created to measure the performance of a dataset in detecting persons using a Raspberry Pi with Coral Edge TPU.
 Special thanks to https://www.pyimagesearch.com/ for inspiration and the imutils library, more documentation and explaination can be found on their homepage.
-Also thanks for review and support to TN1ck
+Also thanks for review and support to TN1ck and superbjorn09
 Author: dj-109
 Creation Date: 29.7.2020
 to complete the Masters Degree Thesis.
@@ -25,26 +25,30 @@ YELLOW_PIN = 8
 GREEN_PIN = 10
 
 
-# LED GPIO helper
-def light(pin, on):
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, on)
+class GPIOHelper:
+    def __init__(self):
+        self.yellow_pin = YELLOW_PIN
+        self.green_pin = GREEN_PIN
+
+    def light(self, pin, on=False):
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(pin, GPIO.OUT)
+        GPIO.output(pin, on)
+
+    def green_on(self):
+        self.light(self.green_pin, on=True)
+        self.light(self.yellow_pin)
+
+    def yellow_on(self):
+        self.light(self.yellow_pin)
+        self.light(self.yellow_pin, on=True)
+
+    def all_off(self):
+        self.light(self.green_pin)
+        self.light(self.yellow_pin)
 
 
-def green_on():
-    light(GREEN_PIN, True)
-    light(YELLOW_PIN, False)
-
-
-def yellow_on():
-    light(GREEN_PIN, False)
-    light(YELLOW_PIN, True)
-
-
-def all_off():
-    light(GREEN_PIN, False)
-    light(YELLOW_PIN, False)
+led = GPIOHelper
 
 
 def parse_arguments():
@@ -62,26 +66,28 @@ def parse_arguments():
     return args
 
 
-def person_detected_led_interface(results):
-    person_counter = 0
-    for result in results:
-        if result.label_id == 0:
-            person_counter += 1
-    if len(results) > 1:
+def light_up_led(person_counter, results):
+    if len(results) > 0:
         if person_counter > 0:
-            yellow_on()
-            log.info("[INFO] Shit, there is a person, be careful!")
+            led.yellow_on()
+            log.info("Shit, there is a person, be careful!")
         else:
-            green_on()
-            log.info("[INFO] ride free, no person detected.")
+            led.green_on()
+            log.info("ride free, no person detected.")
+    elif len(results == 0):
+        led.all_off()
     else:
-        all_off()
+        log.error("Should never come to this point... 5s of both LEDs as a treat!")
+        led.yellow_on()
+        led.green_on()
+        time.sleep(5)
+        led.all_off()
 
 
 def show_on_screen(frame_id, label, r, rotated, starting_time, scale):
     # extract the bounding box and box and predicted class label
     raw_box = r.bounding_box
-    raw_box = raw_box/scale
+    raw_box = raw_box / scale
     box = raw_box.flatten().astype("int")
     (startX, startY, endX, endY) = box
     # draw the bounding box and label on the image
@@ -98,32 +104,31 @@ def show_on_screen(frame_id, label, r, rotated, starting_time, scale):
 
 
 def main():
-
     # construct the argument parser and parse the arguments
     args = parse_arguments()
 
     if args["verbose"]:
         log.basicConfig(level=log.DEBUG)
 
-    log.debug("[DEBUG] parsing class labels...")
+    log.debug("parsing class labels...")
     labels = {}
-    log.debug("[DEBUG] Parsing labels...")
+    log.debug("Parsing labels...")
     for row in open(args["labels"]):
         (classID, label) = row.strip().split(maxsplit=1)
         labels[int(classID)] = label.strip()
-        log.debug("[DEBUG] Label " + str(classID) + " = " + label)
+        log.debug("Label {id} = {label}".format(id=classID, label=label))
 
-    log.info("[INFO] loading parsed tfLite-model...")
+    log.info("loading parsed tfLite-model...")
     model = DetectionEngine(args["model"])
-    log.info("[INFO] starting video stream...")
+    log.info("starting video stream...")
     video_stream = VideoStream(src=0).start()
-    log.info("[INFO] loading and flashing LEDs, warming up camera...")
-    # warming up camera and meanwhile blinking LEDs
-    yellow_on()
+    log.info("loading and test-flashing LEDs, warming up camera...")
+    # warming up camera and meanwhile blinking LEDs for sleep-time
+    led.yellow_on()
     time.sleep(1.0)
-    green_on()
+    led.green_on()
     time.sleep(0.5)
-    all_off()
+    led.all_off()
 
     starting_time = time.time()
     frame_id = 0
@@ -135,12 +140,9 @@ def main():
         frame = cv2.rotate(frame, cv2.ROTATE_180)
         orig = frame.copy()
         orig_width = orig.shape[1]
-        print("originale Breite war mal {} ---",format(orig_width))
-
-        # skalierung:
-
+        log.debug("original width has been {}  before formatting---".format(orig_width))
         frame = imutils.resize(frame, width=300)
-        scale = 300/orig_width
+        scale = 300 / orig_width
 
         # prepare the frame for object detection by converting (1) it
         # from BGR to RGB channel ordering and then (2) from a NumPy
@@ -150,31 +152,36 @@ def main():
         # make predictions on the input frame
         start = time.time()
         results = model.detect_with_image(frame, threshold=args["confidence"],
-                                          # Schwellwert ab dem Objekte als erkannt gelten
                                           keep_aspect_ratio=True, relative_coord=False)
         # results is a list of DetectionCandidate(label_id, score, x1, y1, x2, y2)
         end = time.time()
-        log.info("[INFO] - DETECTION TIME is {:.6} s".format(end-start))
-        person_detected_led_interface(results)
+        log.info("DETECTION TIME is {:.6} s".format(end - start))
+
+        person_counter = 0  # counting detected persons in the actual frame
 
         for r in results:
+            if r.label_id == 0:
+                person_counter += 1
             label = labels[r.label_id]  # fits label from imported labels to the result
             if args["display"]:
                 show_on_screen(frame_id, label, r, orig, starting_time, scale)
             else:
                 elapsed_time = time.time() - starting_time
-                log.info("[INFO] fps = {:.2f}".format(frame_id / elapsed_time))
+                log.info("FPS = {:.2f}".format(frame_id / elapsed_time))
 
-        # show the output frame and wait for a key press
+        light_up_led(person_counter, results)
+        # optional run completely headless
+        # if args["display"]:
         cv2.imshow("Frame", orig)
         key = cv2.waitKey(1) & 0xFF
         if key == 27 or key == "q":
             break
 
-    log.info("[INFO] - Let me clean up your mess. Good bye!")
+    log.info("Oh boy... Let me clean up your mess.")
     GPIO.cleanup()
     cv2.destroyAllWindows()
     video_stream.stop()
+    log.info("Good bye!")
 
 
 if __name__ == "__main__":
