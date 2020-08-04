@@ -106,10 +106,10 @@ def show_on_screen(frame_id, label, r, rotated, starting_time, scale):
 def main():
     # construct the argument parser and parse the arguments)
     args = parse_arguments()
+    # todo: get this shit working - log in logfile and on console
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    # todo: get this shit working
 #    log.basicConfig(filename="personfinder_{}.log".format(now))
-    log.basicConfig(level=logging.INFO, filename=time.strftime("my-%Y-%m-%d.log"))
+    log.basicConfig(level=log.INFO)
 
     if args["verbose"]:
         log.basicConfig(level=log.DEBUG)
