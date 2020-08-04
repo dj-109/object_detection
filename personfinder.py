@@ -9,10 +9,10 @@ Author: dj-109
 Creation Date: 29.7.2020
 to complete the Masters Degree Thesis.
 """
-
 from edgetpu.detection.engine import DetectionEngine
 from imutils.video import VideoStream
 from PIL import Image
+from datetime import datetime
 import imutils  # from pyimagesearch.com
 import argparse
 import time
@@ -48,7 +48,7 @@ class GPIOHelper:
         self.light(self.yellow_pin)
 
 
-led = GPIOHelper
+led = GPIOHelper()
 
 
 def parse_arguments():
@@ -66,7 +66,7 @@ def parse_arguments():
     return args
 
 
-def light_up_led(person_counter, results):
+def light_up_led(person_counter, results, log):
     if len(results) > 0:
         if person_counter > 0:
             led.yellow_on()
@@ -74,7 +74,7 @@ def light_up_led(person_counter, results):
         else:
             led.green_on()
             log.info("ride free, no person detected.")
-    elif len(results == 0):
+    elif len(results) == 0:
         led.all_off()
     else:
         log.error("Should never come to this point... 5s of both LEDs as a treat!")
@@ -104,8 +104,12 @@ def show_on_screen(frame_id, label, r, rotated, starting_time, scale):
 
 
 def main():
-    # construct the argument parser and parse the arguments
+    # construct the argument parser and parse the arguments)
     args = parse_arguments()
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    # todo: get this shit working
+#    log.basicConfig(filename="personfinder_{}.log".format(now))
+    log.basicConfig(level=logging.INFO, filename=time.strftime("my-%Y-%m-%d.log"))
 
     if args["verbose"]:
         log.basicConfig(level=log.DEBUG)
@@ -168,9 +172,10 @@ def main():
             else:
                 elapsed_time = time.time() - starting_time
                 log.info("FPS = {:.2f}".format(frame_id / elapsed_time))
+        log.info("FRAME DURATION is {:.4}".format(time.time() - starting_time))
 
-        light_up_led(person_counter, results)
-        # optional run completely headless
+        light_up_led(person_counter, results, log)
+        # todo: optional run completely headless
         # if args["display"]:
         cv2.imshow("Frame", orig)
         key = cv2.waitKey(1) & 0xFF
