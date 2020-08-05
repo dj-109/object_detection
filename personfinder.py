@@ -61,7 +61,7 @@ def parse_arguments():
                     help="minimum probability to filter weak detections")
     ap.add_argument("-o", "--objects", default={0}, help="objects needed, default is 0 (person)")
     ap.add_argument("-d", "--display", default=True, help="if false, there will be no display output")
-    ap.add_argument("-v", "--verbose", help="increase output verbosity", action="store_true")
+    ap.add_argument("-v", "--verbose", help="increase output verbosity", action="store_true", default=False)
     args = vars(ap.parse_args())
     return args
 
@@ -76,6 +76,7 @@ def light_up_led(person_counter, results, log):
             log.info("ride free, no person detected.")
     elif len(results) == 0:
         led.all_off()
+        log.info("Nothing to detect here at all")
     else:
         log.error("Should never come to this point... 5s of both LEDs as a treat!")
         led.yellow_on()
@@ -106,17 +107,13 @@ def show_on_screen(frame_id, label, r, rotated, starting_time, scale):
 def main():
     # construct the argument parser and parse the arguments)
     args = parse_arguments()
-    # todo: get this shit working - log in logfile and on console
-    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-#    log.basicConfig(filename="personfinder_{}.log".format(now))
-    log.basicConfig(level=log.INFO)
-
+    # todo: add second logger to log detection_time separate
     if args["verbose"]:
-        log.basicConfig(level=log.DEBUG)
-
-    log.debug("parsing class labels...")
+        log.basicConfig(level=log.DEBUG, filename='log_verbose_person_detection.log')
+    else:
+        log.basicConfig(level=log.INFO, filename='log_simple_person_detection.log')
     labels = {}
-    log.debug("Parsing labels...")
+    log.info("Parsing labels...")
     for row in open(args["labels"]):
         (classID, label) = row.strip().split(maxsplit=1)
         labels[int(classID)] = label.strip()
@@ -144,7 +141,7 @@ def main():
         frame = cv2.rotate(frame, cv2.ROTATE_180)
         orig = frame.copy()
         orig_width = orig.shape[1]
-        log.debug("original width has been {}  before formatting---".format(orig_width))
+#        log.debug("original width has been {}  before formatting---".format(orig_width))
         frame = imutils.resize(frame, width=300)
         scale = 300 / orig_width
 
@@ -159,7 +156,7 @@ def main():
                                           keep_aspect_ratio=True, relative_coord=False)
         # results is a list of DetectionCandidate(label_id, score, x1, y1, x2, y2)
         end = time.time()
-        log.info("DETECTION TIME is {:.6} s".format(end - start))
+        log.info("DETECTION TIME is --- {:.6} s".format(end - start))
 
         person_counter = 0  # counting detected persons in the actual frame
 
@@ -169,11 +166,11 @@ def main():
             label = labels[r.label_id]  # fits label from imported labels to the result
             if args["display"]:
                 show_on_screen(frame_id, label, r, orig, starting_time, scale)
-            else:
-                elapsed_time = time.time() - starting_time
-                log.info("FPS = {:.2f}".format(frame_id / elapsed_time))
-        log.info("FRAME DURATION is {:.4}".format(time.time() - starting_time))
+            elapsed_time = time.time() - starting_time
+            log.info("--- FPS = {:.2f}".format(frame_id / elapsed_time))
 
+        passed_time = time.time()-starting_time
+        log.info("DETECTION WINDOW DURATION is {:.3f}".format(passed_time))
         light_up_led(person_counter, results, log)
         # todo: optional run completely headless
         # if args["display"]:
