@@ -70,7 +70,10 @@ def light_up_led(person_counter, results, log):
     if len(results) > 0:
         if person_counter > 0:
             led.yellow_on()
-            log.info("Shit, there is a person, be careful!")
+            if person_counter == 1:
+                log.info("Shit, there is a person, be careful!")
+            else:
+                log.info("Shit, there are {some} persons, be careful!".format(some=person_counter))
         else:
             led.green_on()
             log.info("ride free, no person detected.")
@@ -92,11 +95,16 @@ def show_on_screen(frame_id, label, r, rotated, starting_time, scale):
     box = raw_box.flatten().astype("int")
     (startX, startY, endX, endY) = box
     # draw the bounding box and label on the image
-    cv2.rectangle(rotated, (startX, startY), (endX, endY), (0, 255, 0), 2)
+    if label == "person":
+        box_color = (0, 0, 255)
+    else:
+        box_color = (0, 255, 0)
+
+    cv2.rectangle(rotated, (startX, startY), (endX, endY), box_color, 3)
     y = startY - 15 if startY - 15 > 15 else startY + 15
     text = "{}: {:.2f}%".format(label, r.score * 100)
     cv2.putText(rotated, text, (startX, y),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
     elapsed_time = time.time() - starting_time
     fps = frame_id / elapsed_time
     fps_text = "FPS: {:.2f}".format(fps)
@@ -119,8 +127,8 @@ def main():
         labels[int(classID)] = label.strip()
         log.debug("Label {id} = {label}".format(id=classID, label=label))
 
-    log.info("loading parsed tfLite-model...")
     model = DetectionEngine(args["model"])
+    log.info("loading parsed tfLite-model {modelname}...".format(modelname=model))
     log.info("starting video stream...")
     video_stream = VideoStream(src=0).start()
     log.info("loading and test-flashing LEDs, warming up camera...")
