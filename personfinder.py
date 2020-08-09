@@ -9,6 +9,8 @@ Author: dj-109
 Creation Date: 29.7.2020
 to complete the Masters Degree Thesis.
 """
+import os
+
 from edgetpu.detection.engine import DetectionEngine
 from imutils.video import VideoStream
 from PIL import Image
@@ -62,6 +64,7 @@ def parse_arguments():
     ap.add_argument("-o", "--objects", default={0}, help="objects needed, default is 0 (person)")
     ap.add_argument("-d", "--display", default=True, help="if false, there will be no display output")
     ap.add_argument("-v", "--verbose", help="increase output verbosity", action="store_true", default=False)
+    ap.add_argument("-pc", "--person_counter", help="How many persons are needed to show the image?", default=3)
     args = vars(ap.parse_args())
     return args
 
@@ -149,7 +152,7 @@ def main():
         frame = cv2.rotate(frame, cv2.ROTATE_180)
         orig = frame.copy()
         orig_width = orig.shape[1]
-#        log.debug("original width has been {}  before formatting---".format(orig_width))
+
         frame = imutils.resize(frame, width=300)
         scale = 300 / orig_width
 
@@ -182,6 +185,12 @@ def main():
         light_up_led(person_counter, results, log)
         # todo: optional run completely headless
         # if args["display"]:
+
+        min_persons = int(args["person_counter"])
+        if person_counter > min_persons:
+            name = "./images/{}_persons_frame_{}.jpg".format(person_counter, frame_id)
+            cv2.imwrite(name, orig)
+            log.debug("Creating {name} with {pc} persons".format(name=name, pc=person_counter))
         cv2.imshow("Frame", orig)
         key = cv2.waitKey(1) & 0xFF
         if key == 27 or key == "q":
