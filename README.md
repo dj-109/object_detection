@@ -1,5 +1,5 @@
 # object_detection
-##Detecting people in the traffic to prevent collisions
+#Detecting people in the traffic to prevent collisions
 
 Using a Raspberry Pi and Coral edge TPU with object detection models from https://coral.ai/models/
 
