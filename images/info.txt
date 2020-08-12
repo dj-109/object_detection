@@ -1,0 +1,3 @@
+INFO
+
+here will be stored all the images, created from frames by -pc argument
