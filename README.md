@@ -28,7 +28,7 @@ First wire up your LEDs for detection. In this example, i have connected the (+)
 -- "-l" for the path to the labels. Also **default** *label.txt* configured.
 -- "-c" for the confidence factor used by the object detection model. **Default** value is *0.3* but you will get some false-positive reactions.
 -- "-o" for the label of the objects of interest. **Default** is only the *person*. If you want to detect for example cars and persons, set `-o {0, 2}`
--- "-d" to set the display output. Useful if you have no screen, problem is, you can't see false recognitions. **Default** is *True*, maybe this is not that conventional. _**TODO_** for me maybe :sweat_smile:
+-- "-d" to set the display output. Useful if you have no screen, problem is, you can't see false recognitions. **Default** is *True*, maybe this is not that conventional. _**TODO**_ for me maybe :sweat_smile:
 -- "-v" to get more verbose logging
 -- "-pc" is some additional playground stuff. You can set it to 0, 1, 2, 3 (default). If you set `-pc 2`, than all frames with more than 2 persons will be stored in "./images/". Be careful, this can easy fill up your storage. Probably you need to `mkdir images` first. Some code-feature for later, maybe...:hourglass:	
 
