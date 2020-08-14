@@ -44,6 +44,9 @@ Gif created by the saved frames
 :wrench: framerate decreases while capturing the frames... 
 
 ![imgflip.com/gif/4bfb6k](https://imgflip.com/gif/4bfb6k)
+
 [or find it in the repo](https://github.com/dj-109/object_detection/blob/master/content/4bfb6k.gif)
+
+
 :movie_camera: Screencast video will come soon, maybe...
 
