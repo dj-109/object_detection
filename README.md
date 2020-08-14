@@ -42,8 +42,8 @@ https://youtu.be/IBJsmCTYW18?t=199
 
 Gif created by the saved frames
 :wrench: framerate decreases while capturing the frames... 
-![](content/4bfb6k)
-![Detection Gif](https://imgflip.com/gif/4bfb6k)
+
+![imgflip.com/gif/4bfb6k](https://imgflip.com/gif/4bfb6k)
 
 :movie_camera: Screencast video will come soon, maybe...
 
