@@ -36,5 +36,14 @@ First wire up your LEDs for detection. In this example, i have connected the (+)
 - get some basic knowledge about object detection
 - measure the performance of tflite object detection with Raspberry Pi and edge TPU
 
+### Example with -pc 2
+Video source:
+https://youtu.be/IBJsmCTYW18?t=199
+
+Gif created by the saved frames
+:wrench: framerate decreases while capturing the frames... 
+![](https://imgflip.com/gif/4bfb6k)
+
 
 :movie_camera: Screencast video will come soon, maybe...
+
