@@ -18,6 +18,7 @@ Using a Raspberry Pi and Coral edge TPU with object detection models from https:
 - nothing to detect? -> no reason for flashing the LED
 
 ### Getting Started:
+See the [getting-started guide](https://github.com/dj-109/object_detection/blob/master/GETTING_STARTED.md)
 First wire up your LEDs for detection. In this example, i have connected the (+) of the yellow LED to GPIO-pin 8 and the (+) green LED to GPIO-pin 10. Then i connected both LEDs to a 220 Ohm resistor and connect the resistor to the GPIO GND pin.
 
 ### Now try to start it
