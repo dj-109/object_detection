@@ -13,7 +13,7 @@ Make sure you have following hardware:
 To get started, we need to install some stuffs.
  
 ## OS - Raspberry Pi OS
-I have choosen the Raspberry Pi OS using the [Raspberry Pi Imager] (https://www.raspberrypi.org/downloads) as basis. Install the Imager and connect your micro SD card with your PC. 
+I have choosen the Raspberry Pi OS using the [Raspberry Pi Imager](https://www.raspberrypi.org/downloads) as basis. Install the Imager and connect your micro SD card with your PC. 
 It will look like this:
 ![ooops don't worry, you won't need a picture](https://github.com/dj-109/object_detection/blob/master/content/imager_1.png "Imager start page")
 
@@ -83,4 +83,4 @@ sudo apt-get install libedgetpu1-max
 python3 personfinder.py
 ```
 
-and now go back to the [Readme-File] (https://github.com/dj-109/object_detection/blob/master/README.md)
+and now go back to the [Readme-File](https://github.com/dj-109/object_detection/blob/master/README.md)
