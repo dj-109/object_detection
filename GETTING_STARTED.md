@@ -83,4 +83,4 @@ sudo apt-get install libedgetpu1-max
 python3 personfinder.py
 ```
 
-and now go back to the [Readme-File](https://github.com/dj-109/object_detection/blob/master/README.md)
+and now go back to the [Readme-File](https://github.com/dj-109/object_detection/blob/master/README.md#getting-started)
