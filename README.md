@@ -34,7 +34,7 @@ You can test if your LEDs are correctly wired up by running `python3 led_gpio_te
   - "-d" to set the display output. Useful if you have no screen, problem is, you can't see false recognitions. **Default** is *True*, maybe this is not that conventional. _**TODO**_ for me maybe :sweat_smile:
   - "-v" to get more verbose logging
   - "-pc" is some additional playground stuff. You can set it to 0, 1, 2, 3 (default). If you set `-pc 2`, than all frames with more than 2 persons will be stored in "./images/". Be careful, this can easy fill up your storage. Probably you need to `mkdir images` first. Some code-feature for later, maybe...:hourglass:
-  - "cf" is the camera-flip to turn around the caputred image. The object detection will work upside-down too but showing it on screen looks better right-side up. :metal: 
+  - "-cf" is the camera-flip to turn around the caputred image. The object detection will work upside-down too but showing it on screen looks better right-side up. :metal: 
 
 ### Personal targets:
 - get some basic knowledge about object detection
